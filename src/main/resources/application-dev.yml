@@ -9,3 +9,4 @@ spring:
       maxIdle: 10
       maxWait: 3
       maxActive: 8
+  datasource:
