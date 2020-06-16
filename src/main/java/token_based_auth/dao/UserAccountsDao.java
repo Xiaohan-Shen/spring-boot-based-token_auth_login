@@ -1,8 +1,7 @@
-package dao;
+package token_based_auth.dao;
 
-import bean.UserInfo;
-import org.nutz.dao.Dao;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+import token_based_auth.bean.UserInfo;
 
 public interface UserAccountsDao {
     public void insertUser(UserInfo user);

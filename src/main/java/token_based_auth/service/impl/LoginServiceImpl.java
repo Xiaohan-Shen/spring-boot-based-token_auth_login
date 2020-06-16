@@ -1,11 +1,12 @@
-package service.impl;
+package token_based_auth.service.impl;
 
-import bean.UserInfo;
-import dao.UserAccountsDao;
+import lombok.extern.slf4j.Slf4j;
+import token_based_auth.bean.UserInfo;
+import token_based_auth.dao.UserAccountsDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
-import service.LoginService;
+import token_based_auth.service.LoginService;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.Jwts;
@@ -13,6 +14,7 @@ import java.util.Date;
 
 import java.security.Key;
 
+@Slf4j
 @Service
 public class LoginServiceImpl implements LoginService {
     @Autowired
@@ -25,18 +27,20 @@ public class LoginServiceImpl implements LoginService {
 
     @Override
     public String generateToken(String userId) {
-        String jws = Jwts.builder().setSubject(userId).setExpiration(new Date(System.currentTimeMillis() + 60000)).signWith(KEY).compact();
+        String jws = Jwts.builder().setSubject(userId).setExpiration(new Date(System.currentTimeMillis() + 600000)).signWith(KEY).compact();
+        if (redisTemplate.hasKey(userId))
+            deleteToken(userId);
         redisTemplate.opsForValue().append(userId, jws);
         return jws;
     }
 
     @Override
-    public boolean isTokenValid(String userId, String token) {
-        if (redisTemplate.hasKey(userId)) {
-            String jws = (String) redisTemplate.opsForValue().get(userId);
-            if (jws.equals(token)) {
-                String expirationTime = Jwts.parserBuilder().setSigningKey(KEY).build().parseClaimsJws(jws).getBody().get("exp").toString();
-                if (Integer.parseInt(expirationTime) > System.currentTimeMillis()) {
+    public boolean isTokenValid(String token) {
+        try {
+            String userId = Jwts.parserBuilder().setSigningKey(KEY).build().parseClaimsJws(token).getBody().get("sub").toString();
+            if (redisTemplate.hasKey(userId)) {
+                String jws = (String) redisTemplate.opsForValue().get(userId);
+                if (jws.equals(token)) {
                     return true;
                 } else {
                     return false;
@@ -44,7 +48,7 @@ public class LoginServiceImpl implements LoginService {
             } else {
                 return false;
             }
-        } else {
+        } catch (io.jsonwebtoken.ExpiredJwtException e) {
             return false;
         }
     }
@@ -73,4 +77,5 @@ public class LoginServiceImpl implements LoginService {
         userAccountsDao.insertUser(new UserInfo(userId, password));
         return true;
     }
+
 }

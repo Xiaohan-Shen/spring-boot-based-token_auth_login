@@ -1,6 +1,6 @@
-package config;
+package token_based_auth.config;
 
-import bean.RedisProperties;
+import token_based_auth.bean.RedisProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -28,9 +28,6 @@ public class redisConfig {
         poolConfig.setMaxIdle(redisProperties.getMaxIdle());
         poolConfig.setMaxWaitMillis(redisProperties.getMaxWait());
         poolConfig.setMinIdle(redisProperties.getMaxIdle());
-        poolConfig.setTestOnBorrow(true);
-        poolConfig.setTestOnReturn(false);
-        poolConfig.setTestWhileIdle(true);
         JedisClientConfiguration jedisClientConfiguration;
 
         jedisClientConfiguration = JedisClientConfiguration.builder().usePooling().
@@ -38,9 +35,9 @@ public class redisConfig {
                 readTimeout(Duration.ofMillis(redisProperties.getTimeout())).build();
 
         RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration();
-        redisStandaloneConfiguration.setDatabase(redisProperties.getDatabase());
+//        redisStandaloneConfiguration.setDatabase(redisProperties.getDatabase());
         redisStandaloneConfiguration.setPort(redisProperties.getPort());
-        redisStandaloneConfiguration.setPassword(RedisPassword.of(redisProperties.getPassword()));
+//        redisStandaloneConfiguration.setPassword(RedisPassword.of(redisProperties.getPassword()));
         redisStandaloneConfiguration.setHostName(redisProperties.getHost());
         RedisConnectionFactory redisConnectionFactory = new JedisConnectionFactory(redisStandaloneConfiguration, jedisClientConfiguration);
         return redisConnectionFactory;
@@ -55,12 +52,13 @@ public class redisConfig {
 
         //使用GenericJackson2JsonRedisSerializer来序列化和反序列化redis的value值（默认使用JDK的序列化方式）
         GenericJackson2JsonRedisSerializer jacksonSeial = new GenericJackson2JsonRedisSerializer();
+        StringRedisSerializer stringRedisSerializer = new StringRedisSerializer();
 
-        template.setKeySerializer(new StringRedisSerializer());
-        template.setValueSerializer(jacksonSeial);
+        template.setKeySerializer(stringRedisSerializer);
+        template.setValueSerializer(stringRedisSerializer);
 
-        template.setHashKeySerializer(new StringRedisSerializer());
-        template.setHashValueSerializer(jacksonSeial);
+        template.setHashKeySerializer(stringRedisSerializer);
+        template.setHashValueSerializer(stringRedisSerializer);
         template.afterPropertiesSet();
 
         return template;

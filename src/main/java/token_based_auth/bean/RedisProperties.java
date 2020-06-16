@@ -1,4 +1,4 @@
-package bean;
+package token_based_auth.bean;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

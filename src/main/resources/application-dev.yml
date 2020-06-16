@@ -3,10 +3,17 @@ spring:
     host: 127.0.0.1
     port: 6379
     timeout: 3
-    # password:
-    pool:
-      minIdle: 1
-      maxIdle: 10
-      maxWait: 3
-      maxActive: 8
+    minIdle: 1
+    maxIdle: 10
+    maxWait: 3
+    maxActive: 8
   datasource:
+    username: xiaohans
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    password: shenxiaohan
+    url: jdbc:mysql://localhost:3306/springdb
+nutz:
+  dao:
+    runtime:
+      create: true
+      migration: false
