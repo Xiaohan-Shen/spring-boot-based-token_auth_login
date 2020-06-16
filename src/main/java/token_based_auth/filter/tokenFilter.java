@@ -20,6 +20,9 @@ import java.util.Map;
 @Component
 @WebFilter(filterName = "loginFilter", urlPatterns = {"/*"})
 public class tokenFilter implements Filter {
+
+    // TODO: logout 应该也是需要处于登录状态才能调用的把？
+    //  不然一个人可以在一台电脑上疯狂访问登出接口，让一个账号一直无法正常登录。
     private static final String[] LETGO_URI = {"login", "logout", "register"};
 
     @Autowired

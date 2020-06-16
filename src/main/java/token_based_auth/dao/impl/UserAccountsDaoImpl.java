@@ -19,6 +19,7 @@ public class UserAccountsDaoImpl implements UserAccountsDao {
 
     @Override
     public UserInfo queryByUser(String userName) {
+
         return dao.fetch(UserInfo.class, userName);
     }
 }

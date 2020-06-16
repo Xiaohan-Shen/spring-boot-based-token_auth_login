@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import token_based_auth.bean.UserInfo;
 import token_based_auth.dao.UserAccountsDao;
 import token_based_auth.service.LoginService;
 
@@ -15,6 +14,8 @@ import java.util.Map;
 public class LoginController {
     @Autowired
     LoginService tokenService;
+
+    //TODO: 好像没用到这个呀？
     @Autowired
     UserAccountsDao userAccountsDao;
 
@@ -54,6 +55,7 @@ public class LoginController {
         return map;
     }
 
+    // TODO：是不是只有在登录状态才能调用这个接口？
     @RequestMapping("/logout")
     public Map<String, Object> logout(@RequestBody Map<String, Object> params){
         Map<String, Object> map = new HashMap<>();
