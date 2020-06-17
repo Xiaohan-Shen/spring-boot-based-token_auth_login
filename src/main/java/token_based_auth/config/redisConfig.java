@@ -51,16 +51,15 @@ public class redisConfig {
         template.setConnectionFactory(factory);
 
         //使用GenericJackson2JsonRedisSerializer来序列化和反序列化redis的value值（默认使用JDK的序列化方式）
-        // TODO：怎么没用到呢？
         GenericJackson2JsonRedisSerializer jacksonSeial = new GenericJackson2JsonRedisSerializer();
 
         StringRedisSerializer stringRedisSerializer = new StringRedisSerializer();
 
         template.setKeySerializer(stringRedisSerializer);
-        template.setValueSerializer(stringRedisSerializer);
+        template.setValueSerializer(jacksonSeial);
 
         template.setHashKeySerializer(stringRedisSerializer);
-        template.setHashValueSerializer(stringRedisSerializer);
+        template.setHashValueSerializer(jacksonSeial);
         template.afterPropertiesSet();
 
         return template;

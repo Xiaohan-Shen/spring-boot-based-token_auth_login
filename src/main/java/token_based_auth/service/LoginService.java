@@ -2,18 +2,21 @@ package token_based_auth.service;
 
 import org.springframework.stereotype.Service;
 
-// TODO：interface不需要注解
-@Service
+import javax.servlet.ServletRequest;
+import java.util.Map;
+
+// interface不需要注解
 public interface LoginService {
-    //TODO：interface 不需要 public
-    public String generateToken (String userId);
+    //interface 不需要 public
+    String generateToken (String userId);
 
-    public boolean isTokenValid (String token);
+    boolean isTokenValid (String token);
 
-    public void deleteToken (String userId);
+    void deleteToken (String userId);
 
-    public String authenticate (String userId, String password);
+    String authenticate (String userId, String password);
 
-    public boolean register (String userId, String password);
+    boolean register (String userId, String password);
 
+    void refreshToken (ServletRequest request, Map<String, Object> map);
 }
